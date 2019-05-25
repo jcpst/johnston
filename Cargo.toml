@@ -1,0 +1,10 @@
+[package]
+name = "johnston"
+description = "utilities for generatating JI pitch lattices"
+version = "0.1.0"
+license = ""
+authors = ["Joseph Post <joe@jcpst.com>"]
+
+[dependencies]
+rug = "1.1.1"
+

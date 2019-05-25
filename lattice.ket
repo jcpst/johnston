@@ -1,0 +1,46 @@
+(use list (filter range))
+(use math (log10))
+
+(export (Interval no-rem-for factors prime ratio-to-list power-of-two ratio-to-cents))
+
+;;; ===========================================================================
+;;; Pitch Lattice
+;;; ===========================================================================
+(define (NYI) (panic "Not yet implemented"))
+
+(struct Interval
+  "An individual interval to be used in a lattice/tree structure"
+  ((cent float) (interval ratio) (transposition name) (limit integer)))
+
+(define (no-rem-for n) 
+  ""
+  (lambda (x) (zero (rem n x))))
+
+(define (factors n)
+  "Get the factors of a number"
+  (filter (no-rem-for n) (range 1 (+ 1 n))))
+
+(define (prime n) (NYI))
+
+(define (ratio-to-list r) 
+  "Converts a ratio to a list"
+  (list (numer r) (denom r)))
+
+(define (power-of-two n)
+  "Determines if a number is a power of two"
+  (and (not (zero n)) (zero (& n (- n 1)))))
+
+(define (ratio-to-cents r)
+  "Converts a ratio to cents"
+  (* (log10 r) (/ 1200 (log10 2))))
+
+(define (flatten-ratio r) (NYI))
+(define (flip-ratio r) (NYI))
+(define (limit r) (NYI))
+(define (sum-ratios & r) (NYI))
+(define (step) (NYI))
+(define (make-pitch r) (NYI))
+(define (find-ordinal r) (NYI))
+(define (ordinal-walk step n) (NYI))
+(define (make-set transposition limit step) (NYI))
+
