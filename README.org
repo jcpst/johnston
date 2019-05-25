@@ -1,0 +1,9 @@
+* Johnston
+
+A library for working with JI pitch lattices. Very much a work in-progess.
+
+Started in Common Lisp, then Clojure and back.  [[https://github.com/jcpst/pitch-lattice][old repo]]
+
+Currently working on it as a Rust library.
+
+
