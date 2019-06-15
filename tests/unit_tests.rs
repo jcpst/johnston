@@ -57,6 +57,19 @@ fn it_is_a_power_of_two() {
 }
 
 #[test]
+fn it_calculates_cents() {
+    // Arrange.
+    let fifth = Rational::from((3, 2));
+
+    // Act.
+    let a = calc_cents(&fifth);
+
+    // Assert.
+    let abs_difference = (a.abs() - a).abs();
+    assert!(abs_difference <= f32::EPSILON);
+}
+
+#[test]
 fn it_returns_the_correct_ordinal() {
     // arrange
     let a = Rational::from((3, 2));
@@ -64,9 +77,9 @@ fn it_returns_the_correct_ordinal() {
     let c = Rational::from((4, 3));
 
     // assert
-    assert_eq!(get_ordinal(a), Ordinal::Otonal);
-    assert_eq!(get_ordinal(b), Ordinal::Otonal);
-    assert_eq!(get_ordinal(c), Ordinal::Utonal);
+    assert_eq!(get_ordinal(&a), Ordinal::Otonal);
+    assert_eq!(get_ordinal(&b), Ordinal::Otonal);
+    assert_eq!(get_ordinal(&c), Ordinal::Utonal);
 }
 
 #[test]
@@ -82,6 +95,14 @@ fn it_gets_the_correct_limit() {
     assert_eq!(get_limit(b), 5);
     assert_eq!(get_limit(c), 7);
     assert_eq!(get_limit(d), 13);
+}
+
+#[test]
+fn it_returns_the_interval_to_traverse_the_lattice() {
+    assert_eq!(lattice_relation(3, Ordinal::Otonal), Rational::from((3, 2)));
+    assert_eq!(lattice_relation(5, Ordinal::Otonal), Rational::from((5, 4)));
+    assert_eq!(lattice_relation(3, Ordinal::Utonal), Rational::from((4, 3)));
+    assert_eq!(lattice_relation(5, Ordinal::Utonal), Rational::from((8, 5)));
 }
 
 #[test]
@@ -148,51 +169,28 @@ fn it_is_a_prime_predicate() {
     assert_eq!(is_prime(no_2), false);
     assert_eq!(is_prime(no_3), false);
 }
-/*
+
 #[test]
 fn it_walks_otonally() {
     // Arrange.
     let fifth = Rational::from((3, 2));
 
     // Act.
-    let z = walk(&otonal_step, 5, &fifth);
+    let result = walk(&fifth, 5);
 
     // Assert.
-    assert_eq!(z, vec![(1, 1), (3, 2), (9, 8), (27, 16), (81, 64)]);
+    assert_eq!(result, vec![(1, 1), (3, 2), (9, 8), (27, 16), (81, 64)]);
 }
 
 #[test]
 fn it_walks_utonally() {
     // Arrange.
-    let fifth = Rational::from((3, 2));
+    let fourth = Rational::from((4, 3));
 
     // Act.
-    let z = walk(&utonal_step, 5, &fifth);
+    let result = walk(&fourth, 5);
 
     // Assert.
-    assert_eq!(z, vec![(1, 1), (4, 3), (16, 9), (32, 27), (128, 81)]);
+    assert_eq!(result, vec![(1, 1), (4, 3), (16, 9), (32, 27), (128, 81)]);
 }
-*/
-#[test]
-fn it_calculates_cents() {
-    // Arrange.
-    let fifth = Rational::from((3, 2));
 
-    // Act.
-    let a = calc_cents(&fifth);
-
-    // Assert.
-    let abs_difference = (a.abs() - a).abs();
-    assert!(abs_difference <= f32::EPSILON);
-}
-/*
-#[test]
-fn it_generates_a_pitch_lattice() {
-    let a = generate_lattice(
-        3,
-        vec![Rational::from((3, 2)), Rational::from((5, 4))]
-    );
-
-    assert_eq!(a, vec![vec![Rational::from((3, 2))], vec![Rational::from((3, 2))]]);
-}
-*/

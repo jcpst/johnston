@@ -11,19 +11,6 @@ pub enum Ordinal {
     Utonal,
 }
 
-// flat-map : built in for iterators
-// range-inc : built in
-// [x] factors
-// [x] primep - is_prime
-// [x] max-prime - greatest_prime_factor
-// [x] ratio-to-list
-// [x] power-of-twop - is_power_of_two
-// invert-ratio : Rational::recip()
-// [x] get-ordinal
-// [x] get-limit
-// lattice-relation
-// partial
-// walk
 pub fn factors(num: i32) -> Vec<i32> {
     let nums: Vec<_> = (1..=num).collect();
     let mut result: Vec<i32> = Vec::new();
@@ -83,8 +70,8 @@ pub fn flatten_ratio(ratio: Rational) -> Rational {
     }
 }
 
-pub fn get_ordinal(ratio: Rational) -> Ordinal {
-    let (num, den) = ratio.into_numer_denom();
+pub fn get_ordinal(ratio: &Rational) -> Ordinal {
+    let (num, den) = Rational::from(ratio).into_numer_denom();
 
     if greatest_prime_factor(num.to_i32().unwrap()) > greatest_prime_factor(den.to_i32().unwrap()) {
         Ordinal::Otonal
@@ -98,7 +85,21 @@ pub fn get_limit(ratio: Rational) -> i32 {
     let greatest_num_prime = num.to_i32().unwrap();
     let greatest_den_prime = den.to_i32().unwrap();
 
-    *vec![greatest_num_prime, greatest_den_prime].iter().max().unwrap()
+    *vec![greatest_num_prime, greatest_den_prime]
+        .iter()
+        .max()
+        .unwrap()
+}
+
+// This is the interval to use on a direction of a lattice walk.
+pub fn lattice_relation(prime: usize, ordinal: Ordinal) -> Rational {
+    let two = Rational::from((2, 1));
+    let p = Rational::from((prime, 1));
+
+    flatten_ratio(match ordinal {
+        Ordinal::Otonal => p / two,
+        Ordinal::Utonal => two / p,
+    })
 }
 
 pub fn otonal_step(ratio: &Rational, step: &Rational) -> Rational {
@@ -108,24 +109,27 @@ pub fn otonal_step(ratio: &Rational, step: &Rational) -> Rational {
 pub fn utonal_step(ratio: &Rational, step: &Rational) -> Rational {
     flatten_ratio(Rational::from(ratio) * Rational::from(step.recip_ref()))
 }
-/*
-/// Makes a list of ratios in one direction of a lattice.
-///
-/// # Examples
-///
-/// ```
-/// let fifth = Rational::from((3, 2));
-/// let result = walk(&utonal_step, 5, &fifth);
-/// assert_eq!(result, vec![(1, 1), (4, 3), (16, 9), (32, 27), (128, 81)]);
-/// ```
-pub fn walk(action: &Step, times: usize, step: &Rational) -> Vec<Rational> {
+
+pub fn walk(step: &Rational, times: usize) -> Vec<Rational> {
     let mut ratios = vec![Rational::from((1, 1))];
 
     for _ in 1..times {
-        let next_ratio = action(&ratios.last().unwrap(), step);
+        let last_ratio = ratios.last().cloned().unwrap();
+        let next_ratio = flatten_ratio(last_ratio * step);
         ratios.push(next_ratio);
     }
 
     ratios
 }
-*/
+
+pub fn gen_lattice() -> Vec<Vec<Rational>> {
+    
+
+
+    // example result:
+    vec![
+        vec![Rational::from((1, 1)), Rational::from((3, 2)), Rational::from((9, 8))],
+        vec![Rational::from((5, 4)), Rational::from((15, 8))],
+        vec![Rational::from((25, 16)), Rational::from((125, 64))]
+    ]
+}
