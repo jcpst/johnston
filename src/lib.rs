@@ -122,14 +122,3 @@ pub fn walk(step: &Rational, times: usize) -> Vec<Rational> {
     ratios
 }
 
-pub fn gen_lattice() -> Vec<Vec<Rational>> {
-    
-
-
-    // example result:
-    vec![
-        vec![Rational::from((1, 1)), Rational::from((3, 2)), Rational::from((9, 8))],
-        vec![Rational::from((5, 4)), Rational::from((15, 8))],
-        vec![Rational::from((25, 16)), Rational::from((125, 64))]
-    ]
-}
