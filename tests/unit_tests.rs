@@ -1,5 +1,6 @@
 extern crate johnston;
 extern crate rug;
+mod intext;
 use johnston::*;
 use rug::Rational;
 use std::f32;
@@ -7,7 +8,7 @@ use std::f32;
 #[test]
 fn it_returns_factors() {
     // arrange
-    let six = 6;
+    let six: IntExt = 6;
     let seven = 7;
     let thirty_four = 34;
 
@@ -58,13 +59,13 @@ fn it_is_a_power_of_two() {
 
 #[test]
 fn it_calculates_cents() {
-    // Arrange.
+    // arrange
     let fifth = Rational::from((3, 2));
 
-    // Act.
+    // act
     let a = fifth.cents();
 
-    // Assert.
+    // assert
     let abs_difference = (a.abs() - a).abs();
     assert!(abs_difference <= f32::EPSILON);
 }
@@ -107,14 +108,13 @@ fn it_returns_the_interval_to_traverse_the_lattice() {
 
 #[test]
 fn it_flattens() {
-    // Arrange.
+    // arrange
     let a = Rational::from((18, 4));
     let b = Rational::from((9, 4));
     let c = Rational::from((6, 2));
     let d = Rational::from((3, 4));
 
-    // Act.
-    // Assert.
+    // assert
     assert_eq!(a.flatten(), (9, 8));
     assert_eq!(b.flatten(), (9, 8));
     assert_eq!(c.flatten(), (3, 2));
@@ -123,30 +123,30 @@ fn it_flattens() {
 
 #[test]
 fn it_steps_otonally() {
-    // Arrange.
+    // arrange
     let fifth = Rational::from((3, 2));
     let third = Rational::from((5, 4));
 
-    // Act.
+    // act
     let nine_eighths = otonal_step(&fifth, &fifth);
     let fifteen_eighths = otonal_step(&third, &fifth);
 
-    // Assert.
+    // assert
     assert_eq!(nine_eighths, (9, 8));
     assert_eq!(fifteen_eighths, (15, 8));
 }
 
 #[test]
 fn it_steps_utonally() {
-    // Arrange.
+    // arrange
     let fifth = Rational::from((3, 2));
     let third = Rational::from((5, 4));
 
-    // Act.
+    // act
     let one = utonal_step(&fifth, &fifth);
     let five_thirds = utonal_step(&third, &fifth);
 
-    // Assert.
+    // assert
     assert_eq!(one, (1, 1));
     assert_eq!(five_thirds, (5, 3));
 }
@@ -172,24 +172,24 @@ fn it_is_a_prime_predicate() {
 
 #[test]
 fn it_walks_otonally() {
-    // Arrange.
+    // arrange
     let fifth = Rational::from((3, 2));
 
-    // Act.
+    // act
     let result = fifth.walk(5);
 
-    // Assert.
+    // assert
     assert_eq!(result, vec![(1, 1), (3, 2), (9, 8), (27, 16), (81, 64)]);
 }
 
 #[test]
 fn it_walks_utonally() {
-    // Arrange.
+    // arrange
     let fourth = Rational::from((4, 3));
 
-    // Act.
+    // act
     let result = fourth.walk(5);
 
-    // Assert.
+    // assert
     assert_eq!(result, vec![(1, 1), (4, 3), (16, 9), (32, 27), (128, 81)]);
 }
