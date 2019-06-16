@@ -11,84 +11,115 @@ pub enum Ordinal {
     Utonal,
 }
 
-pub fn factors(num: i32) -> Vec<i32> {
-    let nums: Vec<_> = (1..=num).collect();
-    let mut result: Vec<i32> = Vec::new();
-    for n in nums {
-        if num % n == 0 {
-            result.push(n);
+pub trait IntExt {
+    fn factors(self) -> Vec<i32>;
+    fn is_prime(self) -> bool;
+    fn is_power_of_two(self) -> bool;
+    fn gpf(self) -> i32;
+}
+
+pub trait RationalExt {
+    fn cents(&self) -> f32;
+    fn to_list(&self) -> Vec<i32>;
+    fn ordinal(&self) -> Ordinal;
+    fn limit(&self) -> i32;
+    fn walk(&self, usize) -> Vec<Rational>;
+    fn flatten(self) -> Rational;
+}
+
+impl IntExt for i32 {
+    fn factors(self) -> Vec<i32> {
+        let nums: Vec<_> = (1..=self).collect();
+        let mut result: Vec<i32> = Vec::new();
+        for n in nums {
+            if self % n == 0 {
+                result.push(n);
+            }
+        }
+
+        result
+    }
+
+    fn is_prime(self) -> bool {
+        let val = Integer::from(self).is_probably_prime(15);
+        if let IsPrime::No = val {
+            false
+        } else {
+            true
         }
     }
 
-    result
-}
+    fn is_power_of_two(self) -> bool {
+        self != 0 && (self & (self - 1)) == 0
+    }
 
-pub fn is_prime(num: i32) -> bool {
-    let val = Integer::from(num).is_probably_prime(15);
-    if let IsPrime::No = val {
-        false
-    } else {
-        true
+    fn gpf(self) -> i32 {
+        let mut result: i32 = 0;
+        for n in self.factors() {
+            if n.is_prime() && n > result {
+                result = n;
+            }
+        }
+
+        result
     }
 }
 
-pub fn greatest_prime_factor(num: i32) -> i32 {
-    let mut result: i32 = 0;
-    for n in factors(num) {
-        if is_prime(n) && n > result {
-            result = n;
+impl RationalExt for Rational {
+    fn cents(&self) -> f32 {
+        (1_200f32 / 2f32.log10()) * self.to_f32().log10()
+    }
+
+    fn to_list(&self) -> Vec<i32> {
+        let (num, den) = Rational::from(self).into_numer_denom();
+        vec![num.to_i32().unwrap(), den.to_i32().unwrap()]
+    }
+
+    fn ordinal(&self) -> Ordinal {
+        let (num, den) = Rational::from(self).into_numer_denom();
+        let gpf_num = num.to_i32().unwrap().gpf();
+        let gpf_den = den.to_i32().unwrap().gpf();
+
+        if gpf_num > gpf_den {
+            Ordinal::Otonal
+        } else {
+            Ordinal::Utonal
         }
     }
 
-    result
-}
+    fn limit(&self) -> i32 {
+        let (num, den) = Rational::from(self).into_numer_denom();
 
-pub fn ratio_to_list(ratio: Rational) -> Vec<i32> {
-    let (num, den) = ratio.into_numer_denom();
-    vec![num.to_i32().unwrap(), den.to_i32().unwrap()]
-}
-
-pub fn is_power_of_two(num: i32) -> bool {
-    num != 0 && (num & (num - 1)) == 0
-}
-
-pub fn calc_cents(ratio: &Rational) -> f32 {
-    (1_200f32 / 2f32.log10()) * ratio.to_f32().log10()
-}
-
-// TODO: I think this could be part of an `impl` on Rational...
-pub fn flatten_ratio(ratio: Rational) -> Rational {
-    let one = Rational::from((1, 1));
-    let two = Rational::from((2, 1));
-
-    if ratio > two {
-        flatten_ratio(ratio / two)
-    } else if ratio < one {
-        flatten_ratio(ratio * two)
-    } else {
-        ratio
+        *vec![num.to_i32().unwrap(), den.to_i32().unwrap()]
+            .iter()
+            .max()
+            .unwrap()
     }
-}
 
-pub fn get_ordinal(ratio: &Rational) -> Ordinal {
-    let (num, den) = Rational::from(ratio).into_numer_denom();
+    fn walk(&self, times: usize) -> Vec<Rational> {
+        let mut ratios = vec![Rational::from((1, 1))];
 
-    if greatest_prime_factor(num.to_i32().unwrap()) > greatest_prime_factor(den.to_i32().unwrap()) {
-        Ordinal::Otonal
-    } else {
-        Ordinal::Utonal
+        for _ in 1..times {
+            let last_ratio = ratios.last().cloned().unwrap();
+            let next_ratio = (last_ratio * self).flatten();
+            ratios.push(next_ratio);
+        }
+
+        ratios
     }
-}
 
-pub fn get_limit(ratio: Rational) -> i32 {
-    let (num, den) = ratio.into_numer_denom();
-    let greatest_num_prime = num.to_i32().unwrap();
-    let greatest_den_prime = den.to_i32().unwrap();
+    fn flatten(self) -> Rational {
+        let one = Rational::from((1, 1));
+        let two = Rational::from((2, 1));
 
-    *vec![greatest_num_prime, greatest_den_prime]
-        .iter()
-        .max()
-        .unwrap()
+        if self > two {
+            (self / two).flatten()
+        } else if self < one {
+            (self * two).flatten()
+        } else {
+            self
+        }
+    }
 }
 
 // This is the interval to use on a direction of a lattice walk.
@@ -96,29 +127,16 @@ pub fn lattice_relation(prime: usize, ordinal: Ordinal) -> Rational {
     let two = Rational::from((2, 1));
     let p = Rational::from((prime, 1));
 
-    flatten_ratio(match ordinal {
+    (match ordinal {
         Ordinal::Otonal => p / two,
         Ordinal::Utonal => two / p,
-    })
+    }).flatten()
 }
 
 pub fn otonal_step(ratio: &Rational, step: &Rational) -> Rational {
-    flatten_ratio(Rational::from(ratio) * step)
+    (Rational::from(ratio) * step).flatten()
 }
 
 pub fn utonal_step(ratio: &Rational, step: &Rational) -> Rational {
-    flatten_ratio(Rational::from(ratio) * Rational::from(step.recip_ref()))
+    (Rational::from(ratio) * Rational::from(step.recip_ref())).flatten()
 }
-
-pub fn walk(step: &Rational, times: usize) -> Vec<Rational> {
-    let mut ratios = vec![Rational::from((1, 1))];
-
-    for _ in 1..times {
-        let last_ratio = ratios.last().cloned().unwrap();
-        let next_ratio = flatten_ratio(last_ratio * step);
-        ratios.push(next_ratio);
-    }
-
-    ratios
-}
-

@@ -12,9 +12,9 @@ fn it_returns_factors() {
     let thirty_four = 34;
 
     // assert
-    assert_eq!(factors(six), vec![1, 2, 3, 6]);
-    assert_eq!(factors(seven), vec![1, 7]);
-    assert_eq!(factors(thirty_four), vec![1, 2, 17, 34]);
+    assert_eq!(six.factors(), vec![1, 2, 3, 6]);
+    assert_eq!(seven.factors(), vec![1, 7]);
+    assert_eq!(thirty_four.factors(), vec![1, 2, 17, 34]);
 }
 
 #[test]
@@ -25,18 +25,18 @@ fn it_returns_the_greatest_prime_factor() {
     let fourty_nine = 49;
 
     // assert
-    assert_eq!(greatest_prime_factor(fifteen), 5);
-    assert_eq!(greatest_prime_factor(thirty_four), 17);
-    assert_eq!(greatest_prime_factor(fourty_nine), 7);
+    assert_eq!(fifteen.gpf(), 5);
+    assert_eq!(thirty_four.gpf(), 17);
+    assert_eq!(fourty_nine.gpf(), 7);
 }
 
 #[test]
-fn it_return_a_list_from_a_ratio() {
+fn it_returns_a_list_from_a_ratio() {
     // arrange
     let a = Rational::from((3, 2));
 
     // assert
-    assert_eq!(ratio_to_list(a), vec![3, 2]);
+    assert_eq!(a.to_list(), vec![3, 2]);
 }
 
 #[test]
@@ -49,11 +49,11 @@ fn it_is_a_power_of_two() {
     let e = 1111;
 
     // assert
-    assert_eq!(is_power_of_two(a), false);
-    assert_eq!(is_power_of_two(b), true);
-    assert_eq!(is_power_of_two(c), false);
-    assert_eq!(is_power_of_two(d), true);
-    assert_eq!(is_power_of_two(e), false);
+    assert_eq!(a.is_power_of_two(), false);
+    assert_eq!(b.is_power_of_two(), true);
+    assert_eq!(c.is_power_of_two(), false);
+    assert_eq!(d.is_power_of_two(), true);
+    assert_eq!(e.is_power_of_two(), false);
 }
 
 #[test]
@@ -62,7 +62,7 @@ fn it_calculates_cents() {
     let fifth = Rational::from((3, 2));
 
     // Act.
-    let a = calc_cents(&fifth);
+    let a = fifth.cents();
 
     // Assert.
     let abs_difference = (a.abs() - a).abs();
@@ -77,9 +77,9 @@ fn it_returns_the_correct_ordinal() {
     let c = Rational::from((4, 3));
 
     // assert
-    assert_eq!(get_ordinal(&a), Ordinal::Otonal);
-    assert_eq!(get_ordinal(&b), Ordinal::Otonal);
-    assert_eq!(get_ordinal(&c), Ordinal::Utonal);
+    assert_eq!(a.ordinal(), Ordinal::Otonal);
+    assert_eq!(b.ordinal(), Ordinal::Otonal);
+    assert_eq!(c.ordinal(), Ordinal::Utonal);
 }
 
 #[test]
@@ -91,10 +91,10 @@ fn it_gets_the_correct_limit() {
     let d = Rational::from((13, 8));
 
     // assert
-    assert_eq!(get_limit(a), 3);
-    assert_eq!(get_limit(b), 5);
-    assert_eq!(get_limit(c), 7);
-    assert_eq!(get_limit(d), 13);
+    assert_eq!(a.limit(), 3);
+    assert_eq!(b.limit(), 5);
+    assert_eq!(c.limit(), 7);
+    assert_eq!(d.limit(), 13);
 }
 
 #[test]
@@ -115,10 +115,10 @@ fn it_flattens() {
 
     // Act.
     // Assert.
-    assert_eq!(flatten_ratio(a), (9, 8));
-    assert_eq!(flatten_ratio(b), (9, 8));
-    assert_eq!(flatten_ratio(c), (3, 2));
-    assert_eq!(flatten_ratio(d), (3, 2));
+    assert_eq!(a.flatten(), (9, 8));
+    assert_eq!(b.flatten(), (9, 8));
+    assert_eq!(c.flatten(), (3, 2));
+    assert_eq!(d.flatten(), (3, 2));
 }
 
 #[test]
@@ -162,12 +162,12 @@ fn it_is_a_prime_predicate() {
     let no_3 = 99;
 
     // assert
-    assert_eq!(is_prime(yes_1), true);
-    assert_eq!(is_prime(yes_2), true);
-    assert_eq!(is_prime(yes_3), true);
-    assert_eq!(is_prime(no_1), false);
-    assert_eq!(is_prime(no_2), false);
-    assert_eq!(is_prime(no_3), false);
+    assert_eq!(yes_1.is_prime(), true);
+    assert_eq!(yes_2.is_prime(), true);
+    assert_eq!(yes_3.is_prime(), true);
+    assert_eq!(no_1.is_prime(), false);
+    assert_eq!(no_2.is_prime(), false);
+    assert_eq!(no_3.is_prime(), false);
 }
 
 #[test]
@@ -176,7 +176,7 @@ fn it_walks_otonally() {
     let fifth = Rational::from((3, 2));
 
     // Act.
-    let result = walk(&fifth, 5);
+    let result = fifth.walk(5);
 
     // Assert.
     assert_eq!(result, vec![(1, 1), (3, 2), (9, 8), (27, 16), (81, 64)]);
@@ -188,9 +188,8 @@ fn it_walks_utonally() {
     let fourth = Rational::from((4, 3));
 
     // Act.
-    let result = walk(&fourth, 5);
+    let result = fourth.walk(5);
 
     // Assert.
     assert_eq!(result, vec![(1, 1), (4, 3), (16, 9), (32, 27), (128, 81)]);
 }
-
