@@ -1,6 +1,5 @@
 extern crate johnston;
 extern crate rug;
-mod intext;
 use johnston::*;
 use rug::Rational;
 use std::f32;
@@ -8,7 +7,7 @@ use std::f32;
 #[test]
 fn it_returns_factors() {
     // arrange
-    let six: IntExt = 6;
+    let six = 6;
     let seven = 7;
     let thirty_four = 34;
 
@@ -119,36 +118,6 @@ fn it_flattens() {
     assert_eq!(b.flatten(), (9, 8));
     assert_eq!(c.flatten(), (3, 2));
     assert_eq!(d.flatten(), (3, 2));
-}
-
-#[test]
-fn it_steps_otonally() {
-    // arrange
-    let fifth = Rational::from((3, 2));
-    let third = Rational::from((5, 4));
-
-    // act
-    let nine_eighths = otonal_step(&fifth, &fifth);
-    let fifteen_eighths = otonal_step(&third, &fifth);
-
-    // assert
-    assert_eq!(nine_eighths, (9, 8));
-    assert_eq!(fifteen_eighths, (15, 8));
-}
-
-#[test]
-fn it_steps_utonally() {
-    // arrange
-    let fifth = Rational::from((3, 2));
-    let third = Rational::from((5, 4));
-
-    // act
-    let one = utonal_step(&fifth, &fifth);
-    let five_thirds = utonal_step(&third, &fifth);
-
-    // assert
-    assert_eq!(one, (1, 1));
-    assert_eq!(five_thirds, (5, 3));
 }
 
 #[test]
