@@ -58,13 +58,13 @@ fn it_is_a_power_of_two() {
 
 #[test]
 fn it_calculates_cents() {
-    // Arrange.
+    // arrange
     let fifth = Rational::from((3, 2));
 
-    // Act.
+    // act
     let a = fifth.cents();
 
-    // Assert.
+    // assert
     let abs_difference = (a.abs() - a).abs();
     assert!(abs_difference <= f32::EPSILON);
 }
@@ -107,48 +107,17 @@ fn it_returns_the_interval_to_traverse_the_lattice() {
 
 #[test]
 fn it_flattens() {
-    // Arrange.
+    // arrange
     let a = Rational::from((18, 4));
     let b = Rational::from((9, 4));
     let c = Rational::from((6, 2));
     let d = Rational::from((3, 4));
 
-    // Act.
-    // Assert.
+    // assert
     assert_eq!(a.flatten(), (9, 8));
     assert_eq!(b.flatten(), (9, 8));
     assert_eq!(c.flatten(), (3, 2));
     assert_eq!(d.flatten(), (3, 2));
-}
-
-#[test]
-fn it_steps_otonally() {
-    // Arrange.
-    let fifth = Rational::from((3, 2));
-    let third = Rational::from((5, 4));
-
-    // Act.
-    let nine_eighths = otonal_step(&fifth, &fifth);
-    let fifteen_eighths = otonal_step(&third, &fifth);
-
-    // Assert.
-    assert_eq!(nine_eighths, (9, 8));
-    assert_eq!(fifteen_eighths, (15, 8));
-}
-
-#[test]
-fn it_steps_utonally() {
-    // Arrange.
-    let fifth = Rational::from((3, 2));
-    let third = Rational::from((5, 4));
-
-    // Act.
-    let one = utonal_step(&fifth, &fifth);
-    let five_thirds = utonal_step(&third, &fifth);
-
-    // Assert.
-    assert_eq!(one, (1, 1));
-    assert_eq!(five_thirds, (5, 3));
 }
 
 #[test]
@@ -172,24 +141,44 @@ fn it_is_a_prime_predicate() {
 
 #[test]
 fn it_walks_otonally() {
-    // Arrange.
+    // arrange
     let fifth = Rational::from((3, 2));
 
-    // Act.
+    // act
     let result = fifth.walk(5);
 
-    // Assert.
+    // assert
     assert_eq!(result, vec![(1, 1), (3, 2), (9, 8), (27, 16), (81, 64)]);
 }
 
 #[test]
 fn it_walks_utonally() {
-    // Arrange.
+    // arrange
     let fourth = Rational::from((4, 3));
 
-    // Act.
+    // act
     let result = fourth.walk(5);
 
-    // Assert.
+    // assert
     assert_eq!(result, vec![(1, 1), (4, 3), (16, 9), (32, 27), (128, 81)]);
+}
+
+#[test]
+fn it_generates_a_lattice() {
+    // arrange
+    let r = |n: i32, d: i32| Rational::from((n, d));
+    let args = &[3, 5];
+    let steps = 3;
+    let expected = vec![
+        vec![r(1, 1), r(3, 2), r(9, 8)],
+        vec![r(1, 1), r(4, 3), r(16, 9)],
+        vec![r(1, 1), r(5, 4), r(25, 16)],
+        vec![r(1, 1), r(8, 5), r(32, 25)],
+    ];
+
+    // act
+    let result = gen_lattice(args, steps);
+
+    // assert
+    assert_eq!(result, expected);
 }
