@@ -1,5 +1,3 @@
-//! ## Utilities for generating JI pitch lattices.
-//!
 mod extensions;
 pub use extensions::{IntExt, Ratio};
 use rug::Rational;
@@ -21,17 +19,6 @@ pub fn lattice_relation(prime: usize, ordinal: Ordinal) -> Rational {
     ratio.flatten()
 }
 
-// TODO: write lattice generating function
-// (_could end up on the Ratio trait_)
-//
-//
-// It needs to:
-//   - * generate multi-dimensional lattice structures
-//   - * take an arbitrary number of dimensions
-//   - sort the dimensions by limit
-//   - calculate the otonal rows, decending by vertical dimension
-//   - calculate the utonal rows, ascending by vertical dimension
-//   - * be able to associate additonal dimensions from the tonic
 pub fn gen_lattice(_args: &[usize], steps: usize) -> Vec<Vec<Rational>> {
     // args  - &[3, 5]
     // steps - 3
