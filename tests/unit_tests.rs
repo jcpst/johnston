@@ -162,3 +162,23 @@ fn it_walks_utonally() {
     // assert
     assert_eq!(result, vec![(1, 1), (4, 3), (16, 9), (32, 27), (128, 81)]);
 }
+
+#[test]
+fn it_generates_a_lattice() {
+    // arrange
+    let r = |n: i32, d: i32| Rational::from((n, d));
+    let args = &[3, 5];
+    let steps = 3;
+    let expected = vec![
+        vec![r(1, 1), r(3, 2), r(9, 8)],
+        vec![r(1, 1), r(4, 3), r(16, 9)],
+        vec![r(1, 1), r(5, 4), r(25, 16)],
+        vec![r(1, 1), r(8, 5), r(32, 25)],
+    ];
+
+    // act
+    let result = gen_lattice(args, steps);
+
+    // assert
+    assert_eq!(result, expected);
+}
