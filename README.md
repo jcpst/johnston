@@ -7,7 +7,7 @@ A library for working with JI pitch lattices. Very much a work in-progess.
 
 Started in Common Lisp, then Clojure and back.  [old repo](https://github.com/jcpst/pitch-lattice)
 
-Currently working on it as a Rust library.
+Currently working on it as a Rust library. I'm thinking I'll eventually get the best of both worlds by using [ketos](https://github.com/murarth/ketos) as an extension language.
 
 Example
 -------
