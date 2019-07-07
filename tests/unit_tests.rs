@@ -143,37 +143,52 @@ fn it_is_a_prime_predicate() {
 fn it_walks_otonally() {
     // arrange
     let fifth = Rational::from((3, 2));
+    let response = vec![
+        Pitch::new(Rational::from((1, 1))),
+        Pitch::new(Rational::from((3, 2))),
+        Pitch::new(Rational::from((9, 8))),
+        Pitch::new(Rational::from((27, 16))),
+        Pitch::new(Rational::from((81, 64))),
+    ];
 
     // act
     let result = fifth.walk(5);
 
     // assert
-    assert_eq!(result, vec![(1, 1), (3, 2), (9, 8), (27, 16), (81, 64)]);
+    assert_eq!(result, response);
 }
 
 #[test]
 fn it_walks_utonally() {
     // arrange
+    let p = |n: i32, d: i32| Pitch::new(Rational::from((n, d)));
     let fourth = Rational::from((4, 3));
+    let response = vec![p(1, 1), p(4, 3), p(16, 9), p(32, 27), p(128, 81)];
 
     // act
     let result = fourth.walk(5);
 
     // assert
-    assert_eq!(result, vec![(1, 1), (4, 3), (16, 9), (32, 27), (128, 81)]);
+    assert_eq!(result, response);
 }
 
 #[test]
 fn it_generates_a_lattice() {
     // arrange
-    let r = |n: i32, d: i32| Rational::from((n, d));
+    let p = |n: i32, d: i32| Pitch::new(Rational::from((n, d)));
     let args = &[3, 5];
     let steps = 3;
     let expected = vec![
-        vec![r(1, 1), r(3, 2), r(9, 8)],
-        vec![r(1, 1), r(4, 3), r(16, 9)],
-        vec![r(1, 1), r(5, 4), r(25, 16)],
-        vec![r(1, 1), r(8, 5), r(32, 25)],
+        LatticeDimension {
+            limit: args[0],
+            otonal: vec![p(1, 1), p(3, 2), p(9, 8)],
+            utonal: vec![p(1, 1), p(4, 3), p(16, 9)],
+        },
+        LatticeDimension {
+            limit: args[1],
+            otonal: vec![p(1, 1), p(5, 4), p(25, 16)],
+            utonal: vec![p(1, 1), p(8, 5), p(32, 25)],
+        },
     ];
 
     // act

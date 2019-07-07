@@ -1,6 +1,8 @@
-use rug::{Integer, Rational};
-use rug::integer::IsPrime;
+use crate::constants::{OCTAVE, TONIC};
 use crate::Ordinal;
+use crate::Pitch;
+use rug::integer::IsPrime;
+use rug::{Integer, Rational};
 
 pub trait IntExt {
     fn factors(self) -> Vec<i32>;
@@ -13,8 +15,9 @@ pub trait Ratio {
     fn cents(&self) -> f32;
     fn to_list(&self) -> Vec<i32>;
     fn ordinal(&self) -> Ordinal;
+    fn invert_ordinal(self) -> Rational;
     fn limit(&self) -> i32;
-    fn walk(&self, times: usize) -> Vec<Rational>;
+    fn walk(&self, times: usize) -> Vec<Pitch>;
     fn flatten(self) -> Rational;
 }
 
@@ -78,6 +81,10 @@ impl Ratio for Rational {
         }
     }
 
+    fn invert_ordinal(self) -> Rational {
+        self.recip().flatten()
+    }
+
     fn limit(&self) -> i32 {
         let (num, den) = Rational::from(self).into_numer_denom();
 
@@ -87,26 +94,28 @@ impl Ratio for Rational {
             .unwrap()
     }
 
-    fn walk(&self, times: usize) -> Vec<Rational> {
-        let mut ratios = vec![Rational::from((1, 1))];
+    fn walk(&self, times: usize) -> Vec<Pitch> {
+        let tonic = Rational::from(TONIC);
+        let mut pitches = vec![Pitch::new(tonic)];
 
         for _ in 1..times {
-            let last_ratio = ratios.last().cloned().unwrap();
-            let next_ratio = (last_ratio * self).flatten();
-            ratios.push(next_ratio);
+            let last_pitch = pitches.last().cloned().unwrap();
+            let next_pitch = (last_pitch.ratio * self).flatten();
+
+            pitches.push(Pitch::new(next_pitch));
         }
 
-        ratios
+        pitches
     }
 
     fn flatten(self) -> Rational {
-        let one = Rational::from((1, 1));
-        let two = Rational::from((2, 1));
+        let tonic = TONIC;
+        let octave = Rational::from(OCTAVE);
 
-        if self > two {
-            (self / two).flatten()
-        } else if self < one {
-            (self * two).flatten()
+        if self > octave {
+            (self / octave).flatten()
+        } else if self < tonic {
+            (self * octave).flatten()
         } else {
             self
         }
