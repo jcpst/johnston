@@ -109,11 +109,11 @@ impl Ratio for Rational {
     }
 
     fn ordinal(&self) -> Ordinal {
-        let (num, den) = Rational::from(self).into_numer_denom();
-        let gpf_num = num.to_i32().unwrap().gpf();
-        let gpf_den = den.to_i32().unwrap().gpf();
+        let items = self.to_list();
+        let num = items[0].gpf();
+        let den = items[1].gpf();
 
-        if gpf_num > gpf_den {
+        if num > den {
             Ordinal::Otonal
         } else {
             Ordinal::Utonal
@@ -125,12 +125,7 @@ impl Ratio for Rational {
     }
 
     fn limit(&self) -> i32 {
-        let (num, den) = Rational::from(self).into_numer_denom();
-
-        *vec![num.to_i32().unwrap(), den.to_i32().unwrap()]
-            .iter()
-            .max()
-            .unwrap()
+        *self.to_list().iter().max().unwrap()
     }
 
     fn walk(&self, times: usize) -> Vec<Pitch> {
