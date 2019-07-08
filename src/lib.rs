@@ -1,49 +1,8 @@
 mod constants;
-mod extensions;
+mod types;
 pub use constants::OCTAVE;
-pub use extensions::{IntExt, Ratio};
 use rug::Rational;
-
-#[derive(Debug, PartialEq)]
-pub enum Ordinal {
-    Otonal,
-    Utonal,
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct Pitch {
-    pub cents: f32,
-    pub ratio: Rational,
-}
-
-#[derive(Debug, PartialEq)]
-pub struct LatticeDimension {
-    pub limit: usize,
-    pub otonal: Vec<Pitch>,
-    pub utonal: Vec<Pitch>,
-}
-
-impl Pitch {
-    pub fn new(ratio: Rational) -> Pitch {
-        Pitch {
-            cents: ratio.cents(),
-            ratio,
-        }
-    }
-}
-
-impl LatticeDimension {
-    fn new(dimension: usize, steps: usize) -> LatticeDimension {
-        LatticeDimension {
-            limit: dimension,
-            otonal: Rational::from((dimension as i32, 1)).walk(steps),
-            utonal: Rational::from((dimension as i32, 1))
-                .recip()
-                .flatten()
-                .walk(steps),
-        }
-    }
-}
+pub use types::{IntExt, LatticeDimension, Ordinal, Pitch, Ratio};
 
 pub fn lattice_relation(prime: usize, ordinal: Ordinal) -> Rational {
     let octave = Rational::from(OCTAVE);

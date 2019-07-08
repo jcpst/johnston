@@ -1,8 +1,47 @@
 use crate::constants::{OCTAVE, TONIC};
-use crate::Ordinal;
-use crate::Pitch;
 use rug::integer::IsPrime;
 use rug::{Integer, Rational};
+
+#[derive(Debug, PartialEq)]
+pub enum Ordinal {
+    Otonal,
+    Utonal,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct Pitch {
+    pub cents: f32,
+    pub ratio: Rational,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct LatticeDimension {
+    pub limit: usize,
+    pub otonal: Vec<Pitch>,
+    pub utonal: Vec<Pitch>,
+}
+
+impl Pitch {
+    pub fn new(ratio: Rational) -> Pitch {
+        Pitch {
+            cents: ratio.cents(),
+            ratio,
+        }
+    }
+}
+
+impl LatticeDimension {
+    pub fn new(dimension: usize, steps: usize) -> LatticeDimension {
+        LatticeDimension {
+            limit: dimension,
+            otonal: Rational::from((dimension as i32, 1)).walk(steps),
+            utonal: Rational::from((dimension as i32, 1))
+                .recip()
+                .flatten()
+                .walk(steps),
+        }
+    }
+}
 
 pub trait IntExt {
     fn factors(self) -> Vec<i32>;
