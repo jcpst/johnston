@@ -1,20 +1,21 @@
 use crate::constants::{OCTAVE, TONIC};
 use rug::integer::IsPrime;
 use rug::{Integer, Rational};
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub enum Ordinal {
     Otonal,
     Utonal,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Pitch {
     pub cents: f32,
     pub ratio: Rational,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct LatticeDimension {
     pub limit: usize,
     pub otonal: Vec<Pitch>,

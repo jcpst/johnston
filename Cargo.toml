@@ -7,5 +7,6 @@ edition = "2018"
 authors = ["Joseph Post <joe@jcpst.com>"]
 
 [dependencies]
-rug = "1.1.1"
-
+rug = { version = "1.1.1", features = ["integer", "rational", "serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
