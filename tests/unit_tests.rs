@@ -7,53 +7,32 @@ use std::f32;
 #[test]
 fn it_returns_factors() {
     // arrange
-    let six = 6;
-    let seven = 7;
-    let thirty_four = 34;
+    let empty_vec: Vec<i32> = Vec::new();
 
     // assert
-    assert_eq!(six.factors(), vec![1, 2, 3, 6]);
-    assert_eq!(seven.factors(), vec![1, 7]);
-    assert_eq!(thirty_four.factors(), vec![1, 2, 17, 34]);
+    assert_eq!(0.factors(), empty_vec);
+    assert_eq!(6.factors(), vec![1, 2, 3, 6]);
+    assert_eq!(7.factors(), vec![1, 7]);
+    assert_eq!(34.factors(), vec![1, 2, 17, 34]);
 }
 
 #[test]
 fn it_returns_the_greatest_prime_factor() {
-    // arrange
-    let fifteen = 15;
-    let thirty_four = 34;
-    let fourty_nine = 49;
-
     // assert
-    assert_eq!(fifteen.gpf(), 5);
-    assert_eq!(thirty_four.gpf(), 17);
-    assert_eq!(fourty_nine.gpf(), 7);
-}
-
-#[test]
-fn it_returns_a_list_from_a_ratio() {
-    // arrange
-    let a = Rational::from((3, 2));
-
-    // assert
-    assert_eq!(a.to_list(), vec![3, 2]);
+    assert_eq!(2.gpf(), 2);
+    assert_eq!(15.gpf(), 5);
+    assert_eq!(34.gpf(), 17);
+    assert_eq!(49.gpf(), 7);
 }
 
 #[test]
 fn it_is_a_power_of_two() {
-    // arrange
-    let a = 3;
-    let b = 8;
-    let c = 17;
-    let d = 1024;
-    let e = 1111;
-
     // assert
-    assert_eq!(a.is_power_of_two(), false);
-    assert_eq!(b.is_power_of_two(), true);
-    assert_eq!(c.is_power_of_two(), false);
-    assert_eq!(d.is_power_of_two(), true);
-    assert_eq!(e.is_power_of_two(), false);
+    assert_eq!(3.is_power_of_two(), false);
+    assert_eq!(8.is_power_of_two(), true);
+    assert_eq!(17.is_power_of_two(), false);
+    assert_eq!(1024.is_power_of_two(), true);
+    assert_eq!(1111.is_power_of_two(), false);
 }
 
 #[test]
@@ -67,6 +46,22 @@ fn it_calculates_cents() {
     // assert
     let abs_difference = (a.abs() - a).abs();
     assert!(abs_difference <= f32::EPSILON);
+}
+
+#[test]
+fn it_returns_the_correct_harmonic() {
+    // arrange
+    let tonic = Rational::from((1, 1));
+    let fifth = Rational::from((3, 2));
+    let third = Rational::from((5, 4));
+
+    // act
+    let a = tonic.harmonic(3);
+    let b = third.harmonic(3);
+
+    // assert
+    assert_eq!(a, fifth);
+    assert_eq!(b, Rational::from((15, 8)));
 }
 
 #[test]

@@ -53,7 +53,7 @@ pub trait IntExt {
 
 pub trait Ratio {
     fn cents(&self) -> f32;
-    fn to_list(&self) -> Vec<i32>;
+    fn harmonic(self, partial: u32) -> Rational;
     fn ordinal(&self) -> Ordinal;
     fn invert_ordinal(self) -> Rational;
     fn limit(&self) -> i32;
@@ -104,17 +104,16 @@ impl Ratio for Rational {
         (1_200f32 / 2f32.log10()) * self.to_f32().log10()
     }
 
-    fn to_list(&self) -> Vec<i32> {
-        let (num, den) = Rational::from(self).into_numer_denom();
-        vec![num.to_i32().unwrap(), den.to_i32().unwrap()]
+    fn harmonic(self, partial: u32) -> Rational {
+        (self * Rational::from((partial, 1))).flatten()
     }
 
     fn ordinal(&self) -> Ordinal {
-        let items = self.to_list();
-        let num = items[0].gpf();
-        let den = items[1].gpf();
+        let (num, den) = Rational::from(self).into_numer_denom();
+        let numerator = num.to_i32().unwrap().gpf();
+        let denominator = den.to_i32().unwrap().gpf();
 
-        if num > den {
+        if numerator > denominator {
             Ordinal::Otonal
         } else {
             Ordinal::Utonal
@@ -126,7 +125,11 @@ impl Ratio for Rational {
     }
 
     fn limit(&self) -> i32 {
-        *self.to_list().iter().max().unwrap()
+        let (num, den) = Rational::from(self).into_numer_denom();
+        *vec![num.to_i32().unwrap(), den.to_i32().unwrap()]
+            .iter()
+            .max()
+            .unwrap()
     }
 
     fn walk(&self, times: usize) -> Vec<Pitch> {

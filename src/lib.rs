@@ -1,6 +1,6 @@
 mod constants;
 mod types;
-pub use constants::OCTAVE;
+pub use constants::*;
 use rug::Rational;
 pub use types::{IntExt, LatticeDimension, Ordinal, Pitch, Ratio};
 
@@ -15,6 +15,13 @@ pub fn lattice_relation(prime: usize, ordinal: Ordinal) -> Rational {
     ratio.flatten()
 }
 
+/// Generates a multi-dimensional pitch lattice.
+/// ### Example
+///
+/// ```
+/// # use johnston::gen_lattice;
+/// let lattice = gen_lattice(&[3, 5], 2);
+/// ```
 pub fn gen_lattice(dimensions: &[usize], steps: usize) -> Vec<LatticeDimension> {
     let mut result = vec![];
 
