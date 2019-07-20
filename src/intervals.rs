@@ -1,9 +1,17 @@
 #[macro_export]
 macro_rules! interval {
     ($name:ident, $num:tt, $den:tt) => {
-        #[allow(dead_code)]
-        pub const $name: (u32, u32) = ($num, $den);
+        interval!($name, $num, $den, stringify!($num), stringify!($den));
     };
+
+    ($name:ident, $num:tt, $den:tt, $snum:expr, $sden:expr) => {
+        #[allow(dead_code)]
+        #[doc = "Returns the ratio "]
+        #[doc = $snum]
+        #[doc = "/"]
+        #[doc = $sden]
+        pub const $name: (u32, u32) = ($num, $den);
+    }
 }
 
 interval!(TONIC, 1, 1);

@@ -1,9 +1,10 @@
-mod constants;
+mod intervals;
 mod types;
-pub use constants::*;
+pub use intervals::*;
 use rug::Rational;
 pub use types::{IntExt, LatticeDimension, Ordinal, Pitch, Ratio};
 
+///  
 pub fn lattice_relation(prime: usize, ordinal: Ordinal) -> Rational {
     let octave = Rational::from(OCTAVE);
     let p = Rational::from((prime, 1));

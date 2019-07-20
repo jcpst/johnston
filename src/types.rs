@@ -1,4 +1,4 @@
-use crate::constants::{OCTAVE, TONIC};
+use crate::intervals::{OCTAVE, TONIC};
 use rug::integer::IsPrime;
 use rug::{Integer, Rational};
 use serde::{Deserialize, Serialize};
