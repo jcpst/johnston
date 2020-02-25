@@ -2,6 +2,7 @@ Johnston
 ========
 
 [![Build Status](https://travis-ci.org/jcpst/johnston.svg?branch=master)](https://travis-ci.org/jcpst/johnston)
+![Crates.io](https://img.shields.io/crates/v/johnston)
 
 A library for working with JI pitch lattices. Very much a work in-progess.
 
