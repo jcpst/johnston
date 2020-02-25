@@ -13,17 +13,19 @@ Currently working on it as a Rust library. I'm thinking I'll eventually get the 
 Example
 -------
 
+### Generate a lattice
+
 ```rust
-extern crate johnston;
-use johnston::*;
+use johnston::Lattice;
 
 fn main() {
-    let lattice = gen_lattice(&[3], 5);
-    println!("{:#?}", lattice);
+    let lattice = Lattice::new(&[3, 5], 3);
+    println!("{:?}", lattice);
 }
 ```
 
-result:
+<details>
+    <summary>result</summary>
 
 ```shell
 [
@@ -75,4 +77,21 @@ result:
         ],
     },
 ]
+```
+</details>
+
+### Generate a scale
+
+```rust
+use johnston::Lattice;
+
+fn main() {
+    for pitch in Lattice::new(&[3, 5], 3).scale() {
+        print!("{} ", pitch.cents);
+    }
+}
+```
+
+```
+0 203.90999 386.3137 427.37253 498.04504 701.95496 772.6274 813.6863 996.09
 ```
