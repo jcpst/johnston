@@ -9,7 +9,7 @@ macro_rules! interval {
         #[doc = $snum]
         #[doc = "/"]
         #[doc = $sden]
-        pub const $name: (u32, u32) = ($num, $den);
+        pub const $name: (i32, i32) = ($num, $den);
     };
 
     ($name:ident $num:tt/$den:tt $notes:tt) => {
@@ -24,7 +24,7 @@ macro_rules! interval {
         #[doc = " ("]
         #[doc = $notes]
         #[doc = ")"]
-        pub const $name: (u32, u32) = ($num, $den);
+        pub const $name: (i32, i32) = ($num, $den);
     }
 }
 
