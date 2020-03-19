@@ -7,7 +7,7 @@ pub enum Ordinal {
     Utonal,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Pitch {
     pub cents: f32,
     pub ratio: Rational32,
