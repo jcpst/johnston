@@ -33,7 +33,7 @@ impl Pitch {
     pub fn from_ratio(ratio: Rational32) -> Pitch {
         Pitch {
             cents: cents(ratio),
-            ratio: ratio,
+            ratio,
         }
     }
 
@@ -105,44 +105,6 @@ impl Lattice {
     }
 }
 
-fn factors(num: i32) -> Vec<i32> {
-    let mut result: Vec<i32> = Vec::new();
-
-    for n in 1..=num {
-        if num % n == 0 {
-            result.push(n);
-        }
-    }
-
-    result
-}
-
-fn prime(num: i32) -> bool {
-    for n in 2..num {
-        if num % n == 0 {
-            return false;
-        }
-    }
-
-    true
-}
-
-fn power_of_two(num: i32) -> bool {
-    num != 0 && (num & (num - 1)) == 0
-}
-
-fn gpf(num: i32) -> i32 {
-    let mut result = 0;
-
-    for n in factors(num) {
-        if prime(n) && n > result {
-            result = n;
-        }
-    }
-
-    result
-}
-
 fn cents(ratio: Rational32) -> f32 {
     let ratio_as_float = *ratio.numer() as f32 / *ratio.denom() as f32;
     (1_200f32 / 2f32.log10()) * ratio_as_float.log10()
@@ -157,31 +119,6 @@ mod tests {
     // =========================================================================
     fn p(n: i32, d: i32) -> Pitch {
         Pitch::new((n, d))
-    }
-
-    #[test]
-    fn factors_works() {
-        let expected = vec![1, 2, 17, 34];
-        let actual = factors(34);
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn prime_works() {
-        assert!(prime(31));
-    }
-
-    #[test]
-    fn power_of_two_works() {
-        assert!(power_of_two(1024));
-    }
-
-    #[test]
-    fn gpf_works() {
-        assert_eq!(gpf(2), 2);
-        assert_eq!(gpf(15), 5);
-        assert_eq!(gpf(34), 17);
-        assert_eq!(gpf(49), 7);
     }
 
     #[test]
