@@ -1,3 +1,4 @@
+mod intervals;
 mod pitch;
 
 use num::rational::Ratio;
@@ -26,9 +27,7 @@ impl LatticeDimension {
         LatticeDimension {
             limit: dimension,
             otonal: Pitch::new((dimension, 1)).walk(steps),
-            utonal: Pitch::from_ratio(Ratio::<i32>::new(dimension, 1).recip())
-                .flatten()
-                .walk(steps),
+            utonal: Pitch::new(Ratio::<i32>::new(dimension, 1).recip()).walk(steps),
         }
     }
 }
@@ -64,17 +63,7 @@ impl Lattice {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
-    fn p(n: i32, d: i32) -> Pitch {
-        Pitch::new((n, d))
-    }
-
-    #[test]
-    fn walk_works() {
-        let expected = vec![p(1, 1), p(3, 2), p(9, 8)];
-        let actual = Pitch::new((3, 2)).walk(3);
-
-        assert_eq!(expected, actual);
-    }
+    // TODO: Write tests.
+    // Breaking apart the pitch functionality showed that all the
+    // tests were pitch-specific.
 }
