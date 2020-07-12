@@ -1,3 +1,4 @@
+mod intervals;
 mod pitch;
 
 use num::rational::Ratio;

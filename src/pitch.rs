@@ -1,4 +1,4 @@
-use intervals::{OCTAVE, TONIC};
+use crate::intervals::{OCTAVE, TONIC};
 use num::rational::Ratio;
 use num::rational::Rational32;
 use std::ops;
