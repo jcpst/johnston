@@ -48,7 +48,7 @@ impl ops::Add for Pitch {
 
 impl Pitch {
     pub fn new<T: Rationalize>(interval: T) -> Pitch {
-        let ratio = flatten(interval.to_ratio());
+        let ratio = interval.to_ratio();
         Pitch {
             cents: cents(ratio),
             ordinal: ordinal(ratio),
