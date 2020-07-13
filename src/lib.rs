@@ -1,14 +1,7 @@
 mod intervals;
 mod pitch;
 
-use num::rational::Ratio;
 use pitch::Pitch;
-
-#[derive(PartialEq)]
-pub enum Ordinal {
-    Otonal,
-    Utonal,
-}
 
 #[derive(Debug, PartialEq)]
 pub struct LatticeDimension {
@@ -27,7 +20,7 @@ impl LatticeDimension {
         LatticeDimension {
             limit: dimension,
             otonal: Pitch::new((dimension, 1)).walk(steps),
-            utonal: Pitch::new(Ratio::<i32>::new(dimension, 1).recip()).walk(steps),
+            utonal: Pitch::new((1, dimension)).walk(steps),
         }
     }
 }
