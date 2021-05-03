@@ -1,4 +1,6 @@
 mod intervals;
+mod lattice;
+mod math;
 mod pitch;
 
 use num::rational::Ratio;
@@ -59,11 +61,4 @@ impl Lattice {
 
         pitches
     }
-}
-
-#[cfg(test)]
-mod tests {
-    // TODO: Write tests.
-    // Breaking apart the pitch functionality showed that all the
-    // tests were pitch-specific.
 }

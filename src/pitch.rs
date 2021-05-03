@@ -1,4 +1,8 @@
-use crate::intervals::{OCTAVE, TONIC};
+use crate::{
+    intervals::{OCTAVE, TONIC},
+    lattice::LatticePosition,
+    math::gpf,
+};
 use num::rational::Ratio;
 use num::rational::Rational32;
 use std::ops;
@@ -52,9 +56,35 @@ impl ops::Add for Pitch {
     }
 }
 
+impl ops::AddAssign for Pitch {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
+    }
+}
+
 impl Pitch {
-    pub fn new<T: PitchInit>(ratio: T) -> Pitch {
-        ratio.init()
+    pub fn new<T: PitchInit>(pitchable: T) -> Pitch {
+        pitchable.init()
+    }
+
+    pub fn limit(&self) -> i32 {
+        let gpf_from_numerator = gpf(*self.ratio.numer());
+        let gpf_from_denominator = gpf(*self.ratio.denom());
+
+        gpf_from_numerator.max(gpf_from_denominator)
+    }
+
+    pub fn to_position(&self) -> LatticePosition {
+        let dimension = self.limit();
+        let mut pitch = Pitch::new((dimension, 1));
+        let mut point = 1;
+
+        while pitch.ratio != self.ratio {
+            pitch += pitch;
+            point += 1;
+        }
+
+        LatticePosition { dimension, point }
     }
 
     pub fn walk(&self, times: i32) -> Vec<Pitch> {
@@ -123,5 +153,18 @@ mod tests {
         let actual = Pitch::new((3, 2)).walk(3);
 
         assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn to_pos() {
+        let pitch = Pitch::new((9, 8));
+        let expected = LatticePosition {
+            dimension: 3,
+            point: 2,
+        };
+
+        let result = pitch.to_position();
+
+        assert_eq!(expected, result);
     }
 }
