@@ -20,8 +20,6 @@ fn prime(num: i32) -> bool {
     true
 }
 
-// Euclid's two-thousand-year-old algorithm for finding the greatest common
-// divisor.
 pub(crate) fn gcd(x: i32, y: i32) -> i32 {
     let mut x = x;
     let mut y = y;

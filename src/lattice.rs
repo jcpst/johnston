@@ -50,16 +50,6 @@ pub struct Lattice {
     pub dimensions: Vec<LatticeDimension>,
 }
 
-impl LatticePosition {
-    pub fn determine_pitch_from_position(&self) -> Pitch {
-        let mut interval = Pitch::new(self.dimension);
-        for _ in 1..self.point {
-            interval += interval;
-        }
-        interval
-    }
-}
-
 impl LatticeDimension {
     pub fn new(connector: Pitch) -> LatticeDimension {
         LatticeDimension {
@@ -85,30 +75,6 @@ mod tests {
     use crate::pitch::Ordinal;
 
     use super::*;
-
-    macro_rules! pitch_from_position_test {
-        ($($name:ident: $value:expr,  $expect:expr,)*) => {
-            $(
-                #[test]
-                fn $name() {
-                    let (dimension, point) = $value;
-                    let position = LatticePosition { dimension, point };
-                    let expected = Pitch::new($expect);
-                    let result = position.determine_pitch_from_position();
-
-                    assert_eq!(expected.ratio, result.ratio);
-                }
-            )*
-        }
-    }
-
-    pitch_from_position_test! {
-        // test name           position  expected result
-        fifth_from_position:   (3, 1),   (3, 2),
-        // second_from_position:  (3, 2),   (9, 8),
-        // third_from_position:   (5, 1),   (5, 4),
-        // seventh_from_position: (7, 1),   (7, 4),
-    }
 
     #[test]
     fn dimensions_are_cool() {

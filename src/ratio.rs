@@ -2,10 +2,31 @@ use std::ops::{Div, DivAssign, Mul, MulAssign};
 
 use crate::math::gcd;
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Clone, Copy, Debug, Eq)]
 pub struct Ratio {
     pub numerator: i32,
     pub denominator: i32,
+}
+
+impl Ord for Ratio {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        let lcd = (self.denominator * other.denominator) / gcd(self.denominator, other.denominator);
+        let a = self.numerator * (lcd / self.denominator);
+        let b = other.numerator * (lcd / other.denominator);
+        a.cmp(&b)
+    }
+}
+
+impl PartialOrd for Ratio {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialEq for Ratio {
+    fn eq(&self, other: &Self) -> bool {
+        self.numerator == other.numerator && self.denominator == other.denominator
+    }
 }
 
 pub trait Rational {
