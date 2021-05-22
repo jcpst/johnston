@@ -27,9 +27,6 @@ fn main() {
 }
 ```
 
-<details>
-    <summary>result</summary>
-
 ```shell
 Pitch { cents: 386.3137, ratio: Ratio { numerator: 5, denominator: 4 }, limit: 5, ordinal: Otonal }
 Pitch { cents: 772.6274, ratio: Ratio { numerator: 25, denominator: 16 }, limit: 5, ordinal: Otonal }
@@ -38,4 +35,3 @@ Pitch { cents: 345.25482, ratio: Ratio { numerator: 625, denominator: 512 }, lim
 Pitch { cents: 731.56854, ratio: Ratio { numerator: 3125, denominator: 2048 }, limit: 5, ordinal: Otonal }
 Pitch { cents: 1117.8822, ratio: Ratio { numerator: 15625, denominator: 8192 }, limit: 5, ordinal: Otonal }
 ```
-</details>
