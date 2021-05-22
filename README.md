@@ -14,11 +14,16 @@ Example
 ### Generate a lattice
 
 ```rust
-use johnston::Lattice;
+use johnston::{lattice::LatticeDimension, pitch::Pitch};
 
 fn main() {
-    let lattice = Lattice::new(&[3, 5], 3);
-    println!("{:?}", lattice);
+    let pitch = Pitch::new((5, 4));
+    let lattice_dimension = LatticeDimension::new(pitch);
+    let notes = lattice_dimension.take(6);
+	
+	for note in notes {
+	    println!("{:?}", note);
+    }
 }
 ```
 
@@ -26,71 +31,11 @@ fn main() {
     <summary>result</summary>
 
 ```shell
-[
-    LatticeDimension {
-        limit: 3,
-        otonal: [
-            Pitch {
-                cents: 0.0,
-                ratio: 1,
-            },
-            Pitch {
-                cents: 701.95496,
-                ratio: 3/2,
-            },
-            Pitch {
-                cents: 203.90999,
-                ratio: 9/8,
-            },
-            Pitch {
-                cents: 905.8649,
-                ratio: 27/16,
-            },
-            Pitch {
-                cents: 407.81998,
-                ratio: 81/64,
-            },
-        ],
-        utonal: [
-            Pitch {
-                cents: 0.0,
-                ratio: 1,
-            },
-            Pitch {
-                cents: 498.0449,
-                ratio: 4/3,
-            },
-            Pitch {
-                cents: 996.0899,
-                ratio: 16/9,
-            },
-            Pitch {
-                cents: 294.13483,
-                ratio: 32/27,
-            },
-            Pitch {
-                cents: 792.1799,
-                ratio: 128/81,
-            },
-        ],
-    },
-]
+Pitch { cents: 386.3137, ratio: Ratio { numerator: 5, denominator: 4 }, limit: 5, ordinal: Otonal }
+Pitch { cents: 772.6274, ratio: Ratio { numerator: 25, denominator: 16 }, limit: 5, ordinal: Otonal }
+Pitch { cents: 1158.9412, ratio: Ratio { numerator: 125, denominator: 64 }, limit: 5, ordinal: Otonal }
+Pitch { cents: 345.25482, ratio: Ratio { numerator: 625, denominator: 512 }, limit: 5, ordinal: Otonal }
+Pitch { cents: 731.56854, ratio: Ratio { numerator: 3125, denominator: 2048 }, limit: 5, ordinal: Otonal }
+Pitch { cents: 1117.8822, ratio: Ratio { numerator: 15625, denominator: 8192 }, limit: 5, ordinal: Otonal }
 ```
 </details>
-
-### Generate a scale
-
-```rust
-use johnston::Lattice;
-
-fn main() {
-    for pitch in Lattice::new(&[3, 5], 3).scale() {
-        print!("{} ", pitch.cents);
-    }
-}
-```
-
-```
-0 203.90999 386.3137 427.37253 498.04504 701.95496 772.6274 813.6863 996.09
-```
-

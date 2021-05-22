@@ -1,60 +1,92 @@
-use crate::intervals::{OCTAVE, TONIC};
-use num::rational::Ratio;
-use num::rational::Rational32;
-use std::ops;
+use crate::{
+    intervals::{OCTAVE, TONIC},
+    math::{gpf, power_of_two},
+    ratio::Ratio,
+};
+use std::ops::{Add, AddAssign};
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub enum Ordinal {
+    Otonal,
+    Utonal,
+}
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Pitch {
     pub cents: f32,
-    pub ratio: Rational32,
+    pub ratio: Ratio,
+    pub limit: i32,
+    pub ordinal: Ordinal,
 }
 
-pub trait PitchInit {
-    fn init(&self) -> Pitch;
+pub trait Pitchable {
+    fn to_pitch(&self) -> Pitch;
 }
 
-impl PitchInit for (i32, i32) {
-    fn init(&self) -> Pitch {
-        let ratio = Ratio::<i32>::new(self.0, self.1);
+impl Pitchable for (i32, i32) {
+    fn to_pitch(&self) -> Pitch {
+        let ratio = Ratio::new(*self);
         Pitch {
             cents: cents(ratio),
             ratio: flatten(ratio),
+            limit: limit(ratio),
+            ordinal: determine_ordinal(ratio),
         }
     }
 }
 
-impl PitchInit for Rational32 {
-    fn init(&self) -> Pitch {
+impl Pitchable for i32 {
+    fn to_pitch(&self) -> Pitch {
+        let ratio = Ratio::new((*self, 1));
         Pitch {
-            cents: cents(*self),
-            ratio: flatten(*self),
+            cents: cents(ratio),
+            ratio: flatten(ratio),
+            limit: limit(ratio),
+            ordinal: determine_ordinal(ratio),
         }
     }
 }
 
-impl PitchInit for Pitch {
-    fn init(&self) -> Pitch {
+impl Pitchable for Ratio {
+    fn to_pitch(&self) -> Pitch {
+        let ratio = flatten(*self);
+        Pitch {
+            cents: cents(ratio),
+            ratio,
+            limit: limit(ratio),
+            ordinal: determine_ordinal(ratio),
+        }
+    }
+}
+
+impl Pitchable for Pitch {
+    fn to_pitch(&self) -> Pitch {
         Pitch {
             cents: self.cents,
             ratio: flatten(self.ratio),
+            limit: self.limit,
+            ordinal: self.ordinal,
         }
     }
 }
 
-impl ops::Add for Pitch {
+impl Add for Pitch {
     type Output = Pitch;
 
     fn add(self, rhs: Pitch) -> Pitch {
-        let ratio = flatten(self.ratio * rhs.ratio);
-        let cents = cents(ratio);
+        Pitch::new(self.ratio * rhs.ratio)
+    }
+}
 
-        Pitch { cents, ratio }
+impl AddAssign for Pitch {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }
 
 impl Pitch {
-    pub fn new<T: PitchInit>(ratio: T) -> Pitch {
-        ratio.init()
+    pub fn new<T: Pitchable>(pitchable: T) -> Pitch {
+        pitchable.to_pitch()
     }
 
     pub fn walk(&self, times: i32) -> Vec<Pitch> {
@@ -68,18 +100,14 @@ impl Pitch {
     }
 }
 
-fn cents(ratio: Rational32) -> f32 {
-    let ratio_as_float = *ratio.numer() as f32 / *ratio.denom() as f32;
+fn cents(ratio: Ratio) -> f32 {
+    let ratio_as_float = ratio.numerator as f32 / ratio.denominator as f32;
     (1_200f32 / 2f32.log10()) * ratio_as_float.log10()
 }
 
-fn interval_ratio(interval: (i32, i32)) -> Rational32 {
-    Ratio::<i32>::new(interval.0, interval.1)
-}
-
-fn flatten(ratio: Rational32) -> Rational32 {
-    let tonic = interval_ratio(TONIC);
-    let octave = interval_ratio(OCTAVE);
+fn flatten(ratio: Ratio) -> Ratio {
+    let tonic = Ratio::new(TONIC);
+    let octave = Ratio::new(OCTAVE);
     let mut r = ratio;
     loop {
         if r > octave {
@@ -89,6 +117,21 @@ fn flatten(ratio: Rational32) -> Rational32 {
         } else {
             return r;
         }
+    }
+}
+
+fn limit(ratio: Ratio) -> i32 {
+    let gpf_from_numerator = gpf(ratio.numerator);
+    let gpf_from_denominator = gpf(ratio.denominator);
+
+    gpf_from_numerator.max(gpf_from_denominator)
+}
+
+pub fn determine_ordinal(ratio: Ratio) -> Ordinal {
+    if power_of_two(ratio.denominator) {
+        Ordinal::Otonal
+    } else {
+        Ordinal::Utonal
     }
 }
 
@@ -103,7 +146,7 @@ mod tests {
 
     #[test]
     fn cents_works() {
-        let fifth = Ratio::<i32>::new(3, 2);
+        let fifth = Ratio::new((3, 2));
         let value = cents(fifth);
         let abs_diff = (value.abs() - value).abs();
 
@@ -112,9 +155,9 @@ mod tests {
 
     #[test]
     fn flatten_works() {
-        let a = Pitch::new((18, 4));
+        let a = p(18, 4);
 
-        assert_eq!(a.ratio, Ratio::<i32>::new(9, 8))
+        assert_eq!(a.ratio, Ratio::new((9, 8)));
     }
 
     #[test]
