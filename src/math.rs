@@ -20,6 +20,20 @@ fn prime(num: i32) -> bool {
     true
 }
 
+// Euclid's two-thousand-year-old algorithm for finding the greatest common
+// divisor.
+pub(crate) fn gcd(x: i32, y: i32) -> i32 {
+    let mut x = x;
+    let mut y = y;
+    while y != 0 {
+        let t = y;
+        y = x % y;
+        x = t;
+    }
+    x
+}
+
+/// Returns the greatest prime factor of a number.
 pub(crate) fn gpf(num: i32) -> i32 {
     let mut result = 0;
 
@@ -30,4 +44,9 @@ pub(crate) fn gpf(num: i32) -> i32 {
     }
 
     result
+}
+
+/// Returns `true` if the input isa power of two.
+pub(crate) fn power_of_two(num: i32) -> bool {
+    num != 0 && (num & (num - 1)) == 0
 }

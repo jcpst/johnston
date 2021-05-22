@@ -1,40 +1,12 @@
+use johnston::{lattice::LatticeDimension, pitch::Pitch};
+
 extern crate johnston;
 
-use johnston::Lattice;
+fn main() {
+    let lat_dim = LatticeDimension::new(Pitch::new((7, 4)));
+    let notes = lat_dim.take(10);
 
-fn main() -> () {
-    let lattice = Lattice::new(&[3, 5], 3);
-    println!("{:?}", lattice);
-    println!("");
-
-    println!("Scale: {:?}", Lattice::new(&[3, 5], 3).scale());
-    println!("");
-
-    for dimension in lattice.dimensions {
-        println!("limit: {}", dimension.limit);
-
-        println!("  otonal");
-        for pitch in &dimension.otonal {
-            println!(
-                "  {}/{} : {}",
-                pitch.ratio.numer(),
-                pitch.ratio.denom(),
-                pitch.cents
-            );
-        }
-
-        println!("  utonal");
-        for pitch in &dimension.utonal {
-            println!(
-                "  {}/{} : {}",
-                pitch.ratio.numer(),
-                pitch.ratio.denom(),
-                pitch.cents
-            );
-        }
-    }
-
-    for pitch in Lattice::new(&[3, 5], 3).scale() {
-        print!("{} ", pitch.cents);
+    for note in notes {
+        println!("{:?}", note);
     }
 }
