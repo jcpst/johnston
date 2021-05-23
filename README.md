@@ -21,8 +21,8 @@ fn main() {
     let lattice_dimension = LatticeDimension::new(pitch);
     let notes = lattice_dimension.take(6);
 	
-	for note in notes {
-	    println!("{:?}", note);
+    for note in notes {
+        println!("{:?}", note);
     }
 }
 ```
