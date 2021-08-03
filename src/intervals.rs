@@ -1,31 +1,16 @@
 #[macro_export]
 macro_rules! interval {
     ($name:ident $num:tt/$den:tt) => {
-        interval!($name, $num, $den, stringify!($num), stringify!($den));
-    };
-
-    ($name:ident, $num:tt, $den:tt, $snum:expr, $sden:expr) => {
         #[allow(dead_code)]
-        #[doc = $snum]
-        #[doc = "/"]
-        #[doc = $sden]
+        #[doc = concat!(stringify!($num), "/", stringify!($den))]
         pub const $name: (i32, i32) = ($num, $den);
     };
 
     ($name:ident $num:tt/$den:tt $notes:tt) => {
-        interval!($name, $num, $den, stringify!($num), stringify!($den), $notes);
-    };
-
-    ($name:ident, $num:tt, $den:tt, $snum:expr, $sden:expr, $notes:expr) => {
         #[allow(dead_code)]
-        #[doc = $snum]
-        #[doc = "/"]
-        #[doc = $sden]
-        #[doc = " ("]
-        #[doc = $notes]
-        #[doc = ")"]
+        #[doc = concat!(stringify!($num), "/", stringify!($den), " - _", $notes, "_")]
         pub const $name: (i32, i32) = ($num, $den);
-    }
+    };
 }
 
 interval! { TONIC  1/1 }
