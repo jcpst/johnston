@@ -2,7 +2,7 @@
 macro_rules! interval {
     ($name:ident $num:tt/$den:tt) => {
         #[allow(dead_code)]
-        #[doc = concat!(stringify!($num), "/",stringify!($den))]
+        #[doc = concat!(stringify!($num), "/", stringify!($den))]
         pub const $name: (i32, i32) = ($num, $den);
     };
 
