@@ -92,8 +92,8 @@ impl Pitch {
     pub fn walk(&self, times: i32) -> Vec<Pitch> {
         let mut pitches = vec![Pitch::new((1, 1))];
         for _ in 1..times {
-            let last_pitch = pitches.last().cloned().unwrap();
-            let next_pitch = last_pitch + *self;
+            let last_pitch = pitches.last().unwrap();
+            let next_pitch = *last_pitch + *self;
             pitches.push(next_pitch)
         }
         pitches
@@ -101,8 +101,10 @@ impl Pitch {
 }
 
 fn cents(ratio: Ratio) -> f32 {
+    let cents_per_octave = 1_200f32;
     let ratio_as_float = ratio.numerator as f32 / ratio.denominator as f32;
-    (1_200f32 / 2f32.log10()) * ratio_as_float.log10()
+
+    (cents_per_octave / 2f32.log10()) * ratio_as_float.log10()
 }
 
 fn flatten(ratio: Ratio) -> Ratio {

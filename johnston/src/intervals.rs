@@ -42,7 +42,6 @@ interval! { LIMMA_ASCENDANT       135/128 }
 // TODO: more intervals
 interval! { OCTAVE                2/1   }
 
-
 interval! { C  1/1 }
 interval! { D  9/8 }
 interval! { E  5/4 }
