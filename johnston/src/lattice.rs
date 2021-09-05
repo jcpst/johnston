@@ -64,7 +64,7 @@ impl LatticeDimension {
     pub fn new<T: Pitchable>(connector: T) -> LatticeDimension {
         LatticeDimension {
             connector: connector.to_pitch(),
-            current: Pitch::new(1),
+            current: Pitch::new(TONIC),
         }
     }
 }
@@ -82,6 +82,7 @@ impl Iterator for LatticeDimension {
 
 impl Lattice {
     pub fn new(dimensions: i32, times: usize) -> Lattice {
+        let root = Pitch::new(TONIC);
         let mut pitches = Vec::<Pitch>::new();
 
         for dimension in (2..=dimensions).filter(prime) {
@@ -93,22 +94,17 @@ impl Lattice {
             }
         }
 
-        Lattice {
-            root: Pitch::new(TONIC),
-            pitches,
-        }
+        Lattice { root, pitches }
     }
 
     pub fn scale(self) -> Lattice {
+        let root = self.root;
         let mut pitches = self.pitches;
 
         pitches.sort_unstable_by(|a, b| a.cents.partial_cmp(&b.cents).unwrap());
         pitches.dedup_by(|a, b| a.cents == b.cents);
 
-        Lattice {
-            root: self.root,
-            pitches,
-        }
+        Lattice { root, pitches }
     }
 }
 
