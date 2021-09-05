@@ -10,8 +10,8 @@ fn factors(num: i32) -> Vec<i32> {
     result
 }
 
-fn prime(num: i32) -> bool {
-    for n in 2..num {
+pub(crate) fn prime(num: &i32) -> bool {
+    for n in 2..*num {
         if num % n == 0 {
             return false;
         }
@@ -36,7 +36,7 @@ pub(crate) fn gpf(num: i32) -> i32 {
     let mut result = 0;
 
     for n in factors(num) {
-        if prime(n) && n > result {
+        if prime(&n) && n > result {
             result = n;
         }
     }

@@ -1,5 +1,7 @@
 use clap::{AppSettings, Clap};
-use johnston::{lattice::LatticeDimension, pitch::Pitch};
+use johnston::{
+    lattice::{Lattice, LatticeDimension},
+};
 
 #[derive(Clap, Debug)]
 #[clap(setting = AppSettings::ColoredHelp)]
@@ -10,7 +12,9 @@ struct Options {
 
 #[derive(Clap, Debug)]
 enum SubCommand {
+    /// Follow the pitches down the direction of a lattice branch.
     Walk { dimension: i32, times: usize },
+    /// Sort the Pitches in ascending order.
     Scale { dimension: i32, times: usize },
 }
 
@@ -27,30 +31,17 @@ fn main() {
 
     match opts.subcmd {
         SubCommand::Walk { dimension, times } => {
-            let lat_dim = LatticeDimension::new(Pitch::new(dimension));
-            let notes = lat_dim.take(times);
+            let lattice_dimension = LatticeDimension::new(dimension);
 
-            for note in notes {
-                println!("{:?}", note);
+            for pitch in lattice_dimension.take(times) {
+                println!("{:?}", pitch);
             }
         }
+
         SubCommand::Scale { dimension, times } => {
-            let mut pitches = Vec::<Pitch>::new();
-            let otonal = LatticeDimension::new(Pitch::new(dimension));
-            let utonal = LatticeDimension::new(Pitch::new((1, dimension)));
+            let lattice = Lattice::new(dimension, times).scale();
 
-            for o in otonal.take(times) {
-                pitches.push(o);
-            }
-
-            for u in utonal.take(times) {
-                pitches.push(u);
-            }
-
-            pitches.sort_unstable_by(|a, b| a.cents.partial_cmp(&b.cents).unwrap());
-            pitches.dedup_by(|a, b| a.cents == b.cents);
-
-            for pitch in pitches {
+            for pitch in lattice.pitches {
                 println!("{:?}", pitch)
             }
         }
