@@ -100,7 +100,7 @@ impl Lattice {
         pitches.dedup_by(|a, b| a.cents == b.cents);
 
         Lattice {
-            root: Pitch::new(TONIC),
+            root: self.root,
             pitches,
         }
     }
