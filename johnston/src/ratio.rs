@@ -1,8 +1,11 @@
+use crate::math::gcd;
 use std::ops::{Div, DivAssign, Mul, MulAssign};
 
-use crate::math::gcd;
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Eq)]
+#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub struct Ratio {
     pub numerator: i32,
     pub denominator: i32,
