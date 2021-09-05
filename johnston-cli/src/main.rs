@@ -1,9 +1,5 @@
 use clap::{AppSettings, ArgEnum, Clap};
-use comfy_table::Table;
-use johnston::{
-    lattice::{Lattice, LatticeDimension},
-    pitch::Pitch,
-};
+use johnston::lattice::{Lattice, LatticeDimension};
 
 #[derive(Clap, Debug)]
 #[clap(setting = AppSettings::ColoredHelp)]
@@ -43,21 +39,12 @@ fn main() {
     match command {
         SubCommand::Walk(args) => {
             let lattice_dimension = LatticeDimension::new(args.dimension);
+            let pitches = lattice_dimension.take(args.times).collect::<Vec<_>>();
 
             match args.output {
-                OutputType::Json => {
-                    let pitches = lattice_dimension.take(args.times).collect::<Vec<_>>();
-                    println!("{}", serde_json::to_string(&pitches).unwrap());
-                }
-
-                OutputType::Debug => {
-                    for pitch in lattice_dimension.take(args.times) {
-                        println!("{:?}", pitch);
-                    }
-                }
-                OutputType::Table => {
-                    print_table(lattice_dimension.take(args.times).collect::<Vec<_>>());
-                }
+                OutputType::Json => print::json(pitches),
+                OutputType::Debug => print::debug(pitches),
+                OutputType::Table => print::table(pitches),
             }
         }
 
@@ -65,37 +52,42 @@ fn main() {
             let lattice = Lattice::new(args.dimension, args.times).scale();
 
             match args.output {
-                OutputType::Json => {
-                    println!("{}", serde_json::to_string(&lattice.pitches).unwrap());
-                }
-
-                OutputType::Debug => {
-                    for pitch in lattice.pitches {
-                        println!("{:?}", pitch)
-                    }
-                }
-
-                OutputType::Table => {
-                    print_table(lattice.pitches);
-                }
+                OutputType::Json => print::json(lattice.pitches),
+                OutputType::Debug => print::debug(lattice.pitches),
+                OutputType::Table => print::table(lattice.pitches),
             }
         }
     }
 }
 
-fn print_table(pitches: Vec<Pitch>) {
-    let mut table = Table::new();
+mod print {
+    use comfy_table::Table;
+    use johnston::pitch::Pitch;
 
-    table.set_header(vec!["Ratio", "Cents", "Limit", "Ordinal"]);
-
-    for pitch in pitches {
-        table.add_row(vec![
-            format!("{}/{}", pitch.ratio.numerator, pitch.ratio.denominator),
-            format!("{}", pitch.cents),
-            format!("{}", pitch.limit),
-            format!("{:?}", pitch.ordinal),
-        ]);
+    pub fn json(pitches: Vec<Pitch>) {
+        println!("{}", serde_json::to_string(&pitches).unwrap());
     }
 
-    println!("{}", table);
+    pub fn debug(pitches: Vec<Pitch>) {
+        for pitch in pitches {
+            println!("{:?}", pitch)
+        }
+    }
+
+    pub fn table(pitches: Vec<Pitch>) {
+        let mut table = Table::new();
+
+        table.set_header(vec!["Ratio", "Cents", "Limit", "Ordinal"]);
+
+        for pitch in pitches {
+            table.add_row(vec![
+                format!("{}/{}", pitch.ratio.numerator, pitch.ratio.denominator),
+                format!("{}", pitch.cents),
+                format!("{}", pitch.limit),
+                format!("{:?}", pitch.ordinal),
+            ]);
+        }
+
+        println!("{}", table);
+    }
 }
