@@ -5,13 +5,18 @@ use crate::{
 };
 use std::ops::{Add, AddAssign};
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub enum Ordinal {
     Otonal,
     Utonal,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub struct Pitch {
     pub cents: f32,
     pub ratio: Ratio,

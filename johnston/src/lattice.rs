@@ -4,6 +4,9 @@ use crate::{
     pitch::{Pitch, Pitchable},
 };
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 /*
 TODO: New Lattice Structure.
 - Lattices are infinite.
@@ -37,18 +40,21 @@ then show what the intervals would be if that degree was the root.
  */
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub struct LatticePosition {
     pub dimension: i32,
     pub point: i32,
 }
 
 #[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub struct LatticeDimension {
     pub connector: Pitch,
     pub current: Pitch,
 }
 
 #[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub struct Lattice {
     pub root: Pitch,
     pub pitches: Vec<Pitch>,
