@@ -1,4 +1,8 @@
-use crate::pitch::Pitch;
+use crate::{
+    intervals::TONIC,
+    math::prime,
+    pitch::{Pitch, Pitchable},
+};
 
 /*
 TODO: New Lattice Structure.
@@ -47,13 +51,13 @@ pub struct LatticeDimension {
 #[derive(Clone, Debug, PartialEq)]
 pub struct Lattice {
     pub root: Pitch,
-    pub dimensions: Vec<LatticeDimension>,
+    pub pitches: Vec<Pitch>,
 }
 
 impl LatticeDimension {
-    pub fn new(connector: Pitch) -> LatticeDimension {
+    pub fn new<T: Pitchable>(connector: T) -> LatticeDimension {
         LatticeDimension {
-            connector,
+            connector: connector.to_pitch(),
             current: Pitch::new(1),
         }
     }
@@ -67,6 +71,38 @@ impl Iterator for LatticeDimension {
         self.current = next_pitch;
 
         Some(self.current)
+    }
+}
+
+impl Lattice {
+    pub fn new(dimensions: i32, times: usize) -> Lattice {
+        let mut pitches = Vec::<Pitch>::new();
+
+        for dimension in (2..=dimensions).filter(prime) {
+            let otonal = LatticeDimension::new(dimension);
+            let utonal = LatticeDimension::new((1, dimension));
+
+            for pitch in otonal.take(times).chain(utonal.take(times)) {
+                pitches.push(pitch);
+            }
+        }
+
+        Lattice {
+            root: Pitch::new(TONIC),
+            pitches,
+        }
+    }
+
+    pub fn scale(self) -> Lattice {
+        let mut pitches = self.pitches;
+
+        pitches.sort_unstable_by(|a, b| a.cents.partial_cmp(&b.cents).unwrap());
+        pitches.dedup_by(|a, b| a.cents == b.cents);
+
+        Lattice {
+            root: Pitch::new(TONIC),
+            pitches,
+        }
     }
 }
 
