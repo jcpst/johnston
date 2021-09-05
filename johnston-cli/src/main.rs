@@ -1,4 +1,5 @@
 use clap::{AppSettings, ArgEnum, Clap};
+use comfy_table::Table;
 use johnston::{
     lattice::{Lattice, LatticeDimension},
     pitch::Pitch,
@@ -15,6 +16,7 @@ struct Options {
 enum OutputType {
     Debug,
     Json,
+    Table,
 }
 
 #[derive(Clap, Debug)]
@@ -44,7 +46,7 @@ fn main() {
 
             match args.output {
                 OutputType::Json => {
-                    let pitches: Vec<Pitch> = lattice_dimension.take(args.times).collect();
+                    let pitches = lattice_dimension.take(args.times).collect::<Vec<_>>();
                     println!("{}", serde_json::to_string(&pitches).unwrap());
                 }
 
@@ -52,6 +54,9 @@ fn main() {
                     for pitch in lattice_dimension.take(args.times) {
                         println!("{:?}", pitch);
                     }
+                }
+                OutputType::Table => {
+                    print_table(lattice_dimension.take(args.times).collect::<Vec<_>>());
                 }
             }
         }
@@ -61,7 +66,7 @@ fn main() {
 
             match args.output {
                 OutputType::Json => {
-                    println!("{}", serde_json::to_string(&lattice).unwrap());
+                    println!("{}", serde_json::to_string(&lattice.pitches).unwrap());
                 }
 
                 OutputType::Debug => {
@@ -69,7 +74,28 @@ fn main() {
                         println!("{:?}", pitch)
                     }
                 }
+
+                OutputType::Table => {
+                    print_table(lattice.pitches);
+                }
             }
         }
     }
+}
+
+fn print_table(pitches: Vec<Pitch>) {
+    let mut table = Table::new();
+
+    table.set_header(vec!["Ratio", "Cents", "Limit", "Ordinal"]);
+
+    for pitch in pitches {
+        table.add_row(vec![
+            format!("{}/{}", pitch.ratio.numerator, pitch.ratio.denominator),
+            format!("{}", pitch.cents),
+            format!("{}", pitch.limit),
+            format!("{:?}", pitch.ordinal),
+        ]);
+    }
+
+    println!("{}", table);
 }
