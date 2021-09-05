@@ -1,7 +1,6 @@
 use clap::{AppSettings, Clap};
 use johnston::{
     lattice::{Lattice, LatticeDimension},
-    pitch::Pitch,
 };
 
 #[derive(Clap, Debug)]
